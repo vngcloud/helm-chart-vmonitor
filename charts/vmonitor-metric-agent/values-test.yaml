@@ -1,0 +1,198 @@
+## Default values.yaml for Telegraf
+## This is a YAML-formatted file.
+
+replicaCount: 1
+image:
+  repo: "vngcloud/vmonitor-metrics-agent"
+  tag: "1.26.0-2.0.2"
+  pullPolicy: IfNotPresent
+podAnnotations: {}
+podLabels: {}
+imagePullSecrets: []
+
+## Configure args passed to Telegraf containers
+args: []
+# The name of a secret in the same kubernetes namespace which contains values to
+# be added to the environment (must be manually created)
+# This can be useful for auth tokens, etc.
+
+vmonitor:
+  vmonitorSite: "monitoring-agent.vngcloud.vn"
+  iamURL: "https://iamapis.vngcloud.vn/accounts-api/v2/auth/token"
+  iamClientID: "ef0d6ef3-2a30-4a5c-9f6d-f644e661879c"
+  iamClientSecret: "28aee16d-06e6-4af8-95ba-686c3c6bbf07"
+  clusterName: "tantm-test-1"
+
+## Configure resource requests and limits
+## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+resources: {}
+# requests:
+#   memory: 128Mi
+#   cpu: 100m
+# limits:
+#   memory: 128Mi
+#   cpu: 100m
+
+## Node labels for pod assignment
+## ref: https://kubernetes.io/docs/user-guide/node-selection/
+nodeSelector: {}
+## Affinity for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+##
+affinity: {}
+## Tolerations for pod assignment
+## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+##
+tolerations: []
+# - key: "key"
+#   operator: "Equal|Exists"
+#   value: "value"
+#   effect: "NoSchedule|PreferNoSchedule|NoExecute(1.6 only)"
+
+rbac:
+  # Specifies whether RBAC resources should be created
+  create: true
+
+serviceAccount:
+  # Specifies whether a ServiceAccount should be created
+  create: true
+  # The name of the ServiceAccount to use.
+  # If not set and create is true, a name is generated using the fullname template
+  # name:
+  # Annotations for the ServiceAccount
+  annotations: {}
+
+envKube:
+  - name: HOSTNAME
+    valueFrom:
+      fieldRef:
+        fieldPath: spec.nodeName
+  - name: HOSTIP
+    valueFrom:
+      fieldRef:
+        fieldPath: status.hostIP
+  - name: "HOST_PROC"
+    value: "/hostfs/proc"
+  # HOST_SYS is required by the diskio plugin
+  - name: "HOST_SYS"
+    value: "/hostfs/sys"
+  - name: "HOST_MOUNT_PREFIX"
+    value: "/hostfs"
+
+configKube:
+  global_tags:
+    cluster: "${CLUSTER_NAME}"
+  agent:
+    interval: "60s"
+    round_interval: true
+    metric_batch_size: 1000
+    metric_buffer_limit: 10000
+    collection_jitter: "0s"
+    flush_interval: "30s"
+    flush_jitter: "2s"
+    precision: ""
+    debug: false
+    quiet: false
+    logfile: ""
+    hostname: ""
+    omit_hostname: false
+  # processors:
+  #   - enum:
+  #       mapping:
+  #         field: "status"
+  #         dest: "status_code"
+  #         value_mappings:
+  #           healthy: 1
+  #           problem: 2
+  #           critical: 3
+  aggregators:
+    - derivative:
+        period: "60s"
+
+  inputs:
+    - kubernetes:
+        url: "https://$HOSTIP:10250"
+        insecure_skip_verify: true
+  docker:
+    enabled: false
+    endpoint: ""
+
+
+envKubeState:
+  - name: HOSTNAME
+    valueFrom:
+      fieldRef:
+        fieldPath: spec.nodeName
+  - name: HOSTIP
+    valueFrom:
+      fieldRef:
+        fieldPath: status.hostIP
+
+configKubeState:
+  global_tags:
+    cluster: "${CLUSTER_NAME}"
+  agent:
+    interval: "60s"
+    round_interval: true
+    metric_batch_size: 2000
+    metric_buffer_limit: 20000
+    collection_jitter: "0s"
+    flush_interval: "30s"
+    flush_jitter: "2s"
+    precision: ""
+    debug: false
+    quiet: false
+    logfile: ""
+    hostname: ""
+    omit_hostname: false
+  # processors: []
+  #   - enum:
+  #       mapping:
+  #         field: "status"
+  #         dest: "status_code"
+  #         value_mappings:
+  #           healthy: 1
+  #           problem: 2
+  #           critical: 3
+  aggregators:
+    - derivative:
+        period: "60s"
+
+  inputs:
+    - kube_inventory:
+        ## url is kubernetes api address 
+        ## it is default point to kubernetes api by default k8s service 
+        url: "https://kubernetes.default"
+        namespace: ""
+        resource_include:
+          - "nodes"
+          - "statefulsets"
+          - "deployments"
+          - "pods"
+          - "daemonsets"
+        insecure_skip_verify: true
+        fielddrop:
+          - "terminated_reason"
+    - prometheus:
+        ## url is point to kube-state-metrics endpoint
+        ## Change it to the kube-state-metrics endpoint that you deploy in the cluster
+        urls:
+          - "http://kube-state-metrics.kube-system:8080/metrics"
+
+metrics:
+  internal:
+    enabled: false
+    collect_memstats: false
+# Lifecycle hooks
+# hooks:
+#   postStart: ["/bin/sh", "-c", "echo Telegraf started"]
+#   preStop: ["/bin/sh", "-c", "sleep 60"]
+
+## Pod disruption budget configuration
+##
+pdb:
+  ## Specifies whether a Pod disruption budget should be created
+  ##
+  create: false
+  minAvailable: 1
+  # maxUnavailable: 1

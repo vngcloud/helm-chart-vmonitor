@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "vmonitor-metric-agent.kubeconfig" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "vmonitor-metric-agent.labels" . | nindent 4 }}
+data:
+  telegraf.conf: |+
+    {{- $tplVersion := include "detect.version" . }}
+    {{ template "global_tags" .Values.configKube.global_tags }}
+    {{ template "agent" .Values.configKube.agent }}
+    {{ template "processors" (list $tplVersion .Values.configKube.processors) }}
+    {{ template "aggregators" (list $tplVersion .Values.configKube.aggregators) }}
+    {{ template "outputs" (list $tplVersion .Values.configKube.outputs) }}
+    [[outputs.vngcloud_vmonitor]]
+      url = "https://${VMONITOR_SITE}:443"
+      insecure_skip_verify = false
+      data_format = "vngcloud_vmonitor"
+      client_id = "${IAM_CLIENT_ID}"
+      client_secret = "${IAM_CLIENT_SECRET}"
+      iam_url = "${IAM_URL}"
+      timeout = "30s"
+    {{ template "monitor_self" .Values.configKube.monitor_self }}
+    {{ template "inputs" (list $tplVersion .Values.configKube.inputs) }}
+    [[inputs.diskio]]
+    [[inputs.kernel]]
+    [[inputs.mem]]
+    [[inputs.net]]
+    [[inputs.processes]]
+    [[inputs.swap]]
+    [[inputs.system]]
+
+    [[inputs.cpu]]
+      percpu = true
+      totalcpu = true
+      collect_cpu_time = false
+      report_active = false
+
+    [[inputs.disk]]
+      ignore_fs = ["tmpfs", "devtmpfs", "devfs", "iso9660", "overlay", "aufs", "squashfs"]
+
+    {{- if .Values.configKube.docker.enabled }}
+    {{- if .Values.configKube.docker.endpoint }}
+    [[inputs.docker]]
+      endpoint = {{ .Values.configKube.docker.endpoint | quote }}
+    {{- end }}
+    {{- end }}
