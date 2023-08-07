@@ -20,6 +20,7 @@ entries:
     maintainers:
     - email: support@vngcloud.com
       name: vngcloud
+    icon: https://vngcloud.github.io/helm-charts-vmonitor/vngcloud-logo.png
     urls:
     - https://github.com/vngcloud/helm-charts-vmonitor/releases/download/vmonitor-metric-agent-0.2.0/vmonitor-metric-agent-0.2.0.tgz
     version: 0.2.0
