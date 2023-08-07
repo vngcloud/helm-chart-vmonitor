@@ -36,7 +36,6 @@ Session.vim
 
 .history
 Chart.lock
-values-test.yaml
 
 # Test value file
-charts/vmonitor-metric-agent/values-test.yaml
+*test*
