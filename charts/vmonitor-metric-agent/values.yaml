@@ -15,9 +15,9 @@ vmonitor:
   kubeStateMetricsEnabled: true
   vmonitorSite: "monitoring-agent.vngcloud.vn"
   iamURL: "https://iamapis.vngcloud.vn/accounts-api/v2/auth/token"
-  iamClientID: "YOUR_CLIENT_ID_XXXXXXXXXXXXXXXXXXX"
-  iamClientSecret: "YOUR_CLIENT_SECRET_XXXXXXXXXXXXXXX"
-  clusterName: "cluster-1"
+  iamClientID: # <YOUR_CLIENT_ID_XXXXXXXXXXXXXXXXXXX>
+  iamClientSecret: # <YOUR_CLIENT_SECRET_XXXXXXXXXXXXXXX>
+  clusterName: "cluster-k8s"
 
 nodeAgent:
   env: 
@@ -46,7 +46,7 @@ nodeAgent:
       metric_buffer_limit: 100000
       collection_jitter: "0s"
       flush_interval: "30s"
-      flush_jitter: "2s"
+      flush_jitter: "1s"
       precision: ""
       debug: false
       quiet: false
@@ -62,9 +62,9 @@ nodeAgent:
     #           healthy: 1
     #           problem: 2
     #           critical: 3
-    aggregators:
-      - derivative:
-          period: "60s"
+    # aggregators:
+    #   - derivative:
+    #       period: "60s"
 
     inputs:
       - kubernetes:
@@ -107,8 +107,8 @@ nodeAgent:
 kubeStateMetricsAgent:
   enabled: true
   useCustomKubeStateMetricEndpoint:
-    enabled: true
-    endpoint: "http://coroot-kube-state-metrics.coroot:8080/metrics" 
+    enabled: false
+    endpoint: "http://example-kube-state-metrics.namespace:8080/metrics" 
 
   env:
     - name: HOSTNAME
@@ -126,11 +126,11 @@ kubeStateMetricsAgent:
     agent:
       interval: "30s"
       round_interval: true
-      metric_batch_size: 2000
-      metric_buffer_limit: 200000
+      metric_batch_size: 1000
+      metric_buffer_limit: 100000
       collection_jitter: "0s"
       flush_interval: "30s"
-      flush_jitter: "2s"
+      flush_jitter: "1s"
       precision: ""
       debug: false
       quiet: false
@@ -146,9 +146,9 @@ kubeStateMetricsAgent:
     #           healthy: 1
     #           problem: 2
     #           critical: 3
-    aggregators:
-      - derivative:
-          period: "60s"
+    # aggregators:
+    #   - derivative:
+    #       period: "60s"
 
     inputs:
       - kube_inventory:
@@ -165,7 +165,7 @@ kubeStateMetricsAgent:
           insecure_skip_verify: true
           fielddrop:
             - "terminated_reason"
-    monitor_self: true
+    monitor_self: false
   ## Configure resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
   resources: {}

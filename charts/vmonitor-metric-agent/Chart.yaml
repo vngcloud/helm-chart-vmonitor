@@ -9,6 +9,7 @@ home: https://www.vngcloud.vn
 maintainers:
   - name: VNGCloud
     email: support@vngcloud.vn
+icon: https://vngcloud.github.io/helm-charts-vmonitor/vngcloud-logo.png
 dependencies:
 - condition: vmonitor.kubeStateMetricsEnabled
   name: kube-state-metrics
