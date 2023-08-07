@@ -1,3 +1,4 @@
+{{- if .Values.kubeStateMetricsAgent.enabled }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -21,7 +22,7 @@ spec:
 {{- end }}
       annotations:
         checksum/config: {{ include (print $.Template.BasePath "/configmap-kube-state.yaml") . | sha256sum }}
-        checksum/config: {{ include (print $.Template.BasePath "/secret-config.yaml") . | sha256sum }}
+        checksum/secret: {{ include (print $.Template.BasePath "/secret-vmonitor.yaml") . | sha256sum }}
         {{- if .Values.podAnnotations }}
 {{ toYaml .Values.podAnnotations | indent 8 }}
         {{- end }}
@@ -46,7 +47,7 @@ spec:
 {{ toYaml .Values.args | indent 8 }}
         {{- end }}
         env:
-{{ toYaml .Values.envKubeState | indent 8 }}
+{{ toYaml .Values.kubeStateMetricsAgent.env | indent 8 }}
         envFrom:
           - secretRef:
               name: {{ include "vmonitor-metric-agent.secretconfigname" .}}
@@ -116,3 +117,4 @@ spec:
       {{- if .Values.volumes }}
 {{ toYaml .Values.volumes | indent 6 }}
       {{- end }}
+{{- end }}

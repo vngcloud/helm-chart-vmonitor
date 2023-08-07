@@ -1,34 +1,33 @@
-{{- if .Values.kubeStateMetricsAgent.enabled }}
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: {{ include "vmonitor-metric-agent.kubestateconfig" . }}
+  name: {{ include "vmonitor-metric-agent.nodeconfig" . }}
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "vmonitor-metric-agent.labels" . | nindent 4 }}
 data:
   telegraf.conf: |+
     {{- $tplVersion := include "detect.version" . }}
-    {{ template "global_tags" .Values.kubeStateMetricsAgent.config.global_tags }}
-    {{ template "agent" .Values.kubeStateMetricsAgent.config.agent }}
+    {{ template "global_tags" .Values.nodeAgent.config.global_tags }}
+    {{ template "agent" .Values.nodeAgent.config.agent }}
 
     ###############################################################################
     #                            PROCESSOR PLUGINS                                #
     ###############################################################################
-
-    {{ template "processors" (list $tplVersion .Values.kubeStateMetricsAgent.config.processors) }}
+    
+    {{ template "processors" (list $tplVersion .Values.nodeAgent.config.processors) }}
 
     ###############################################################################
     #                            AGGREGATOR PLUGINS                               #
     ###############################################################################
 
-    {{ template "aggregators" (list $tplVersion .Values.kubeStateMetricsAgent.config.aggregators) }}
+    {{ template "aggregators" (list $tplVersion .Values.nodeAgent.config.aggregators) }}
 
     ###############################################################################
     #                            OUTPUT PLUGINS                                   #
     ###############################################################################
 
-    {{ template "outputs" (list $tplVersion .Values.kubeStateMetricsAgent.config.outputs) }}
+    {{ template "outputs" (list $tplVersion .Values.nodeAgent.config.outputs) }}
     [[outputs.vngcloud_vmonitor]]
       url = "https://${VMONITOR_SITE}:443"
       insecure_skip_verify = false
@@ -42,7 +41,28 @@ data:
     #                            INPUT PLUGINS                                    #
     ###############################################################################
     
-    {{ template "inputs" (list $tplVersion .Values.kubeStateMetricsAgent.config.inputs) }}
-    {{ template "kube_state_metrics_endpoint" . }}
-    {{ template "monitor_self" .Values.kubeStateMetricsAgent.config.monitor_self }}
-{{- end }}
+    {{ template "monitor_self" .Values.nodeAgent.config.monitor_self }}
+    {{ template "inputs" (list $tplVersion .Values.nodeAgent.config.inputs) }}
+    [[inputs.diskio]]
+    [[inputs.kernel]]
+    [[inputs.mem]]
+    [[inputs.net]]
+    [[inputs.processes]]
+    [[inputs.swap]]
+    [[inputs.system]]
+
+    [[inputs.cpu]]
+      percpu = true
+      totalcpu = true
+      collect_cpu_time = false
+      report_active = false
+
+    [[inputs.disk]]
+      ignore_fs = ["tmpfs", "devtmpfs", "devfs", "iso9660", "overlay", "aufs", "squashfs"]
+
+    {{- if .Values.nodeAgent.config.docker.enabled }}
+    {{- if .Values.nodeAgent.config.docker.endpoint }}
+    [[inputs.docker]]
+      endpoint = {{ .Values.nodeAgent.config.docker.endpoint | quote }}
+    {{- end }}
+    {{- end }}

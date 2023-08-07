@@ -728,8 +728,8 @@ Defines the name configmap kube-state-metric and kube-node-metrics
 {{- include "vmonitor-metric-agent.fullname" . -}}-kube-state-config
 {{- end -}}
 
-{{- define "vmonitor-metric-agent.kubeconfig" -}}
-{{- include "vmonitor-metric-agent.fullname" . -}}-kube-config
+{{- define "vmonitor-metric-agent.nodeconfig" -}}
+{{- include "vmonitor-metric-agent.fullname" . -}}-node-config
 {{- end -}}
 
 {{/*
@@ -746,5 +746,23 @@ Activate inputs.internal through flag monitor_self
 {{- define "monitor_self" -}}
 {{- if . -}}
 [[inputs.internal]]
+{{- end }}
+{{- end -}}
+
+
+{{/*
+Build kube-state-metrics endpoint 
+*/}}
+{{- define "kube_state_metrics_endpoint" -}}
+{{- if .Values.kubeStateMetricsAgent.useCustomKubeStateMetricEndpoint.enabled -}}
+    [[inputs.prometheus]]
+      urls = [
+        {{ .Values.kubeStateMetricsAgent.useCustomKubeStateMetricEndpoint.endpoint | quote }}
+      ]
+{{- else }}
+    [[inputs.prometheus]]
+      urls = [
+        {{ printf "http://%s-kube-state-metrics.%s:8080/metrics" .Release.Name .Release.Namespace | quote }}
+      ] 
 {{- end }}
 {{- end -}}
