@@ -3,7 +3,7 @@ entries:
   vmonitor-metric-agent:
   - apiVersion: v2
     appVersion: 1.26.2
-    created: "2023-03-08T23:10:05.035162908+07:00"
+    created: "2023-08-08T09:49:52.069902889+07:00"
     description: vMonitor Platform Metric Agent
     digest: d39e4a4f80b4e4de95fdcb24d1f301e6bb339e07b5b25da66aca736ea740d7ee
     name: vmonitor-metric-agent
@@ -24,4 +24,4 @@ entries:
     urls:
     - https://github.com/vngcloud/helm-charts-vmonitor/releases/download/vmonitor-metric-agent-0.2.0/vmonitor-metric-agent-0.2.0.tgz
     version: 0.2.0
-generated: "2023-03-08T23:10:05.034233207+07:00"
+generated: "2023-08-08T09:49:52.069902889+07:00"
