@@ -61,7 +61,7 @@ kubectl get pod <-n your_namespace> | grep "vmonitor-metric-agent"
 To uninstall/delete the `vmonitor-metric-agent` deployment:
 
 ```bash
-helm uninstall vmonitor-metric-agent --wait
+helm uninstall vmonitor-metric-agent
 ```
 
 The command removes all the Kubernetes resources associated with the chart and deletes the release.
@@ -101,7 +101,7 @@ helm install -f vmonitor-values.yaml vmonitor-metric-agent vmonitor-platform/vmo
 OR
 
 ```bash
-helm upgrade -f vmonitor-values.yaml vmonitor-metric-agent vmonitor-platform/vmonitor-metric-agent
+helm upgrade -f vmonitor-values.yaml --reuse-values vmonitor-metric-agent vmonitor-platform/vmonitor-metric-agent
 ```
 
 See the [All configuration options](#all-configuration-options) section to discover the description of all the available configuration.
