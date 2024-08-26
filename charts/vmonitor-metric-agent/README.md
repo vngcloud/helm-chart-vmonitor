@@ -1,6 +1,6 @@
 # vMonitor Plaform Metric Agent
 
-![Version: 0.2.0](https://img.shields.io/badge/Version-0.2.0-informational?style=flat-square) ![AppVersion: 1.26.2](https://img.shields.io/badge/AppVersion-1.26.2-informational?style=flat-square)
+![Version: 0.4.0](https://img.shields.io/badge/Version-0.4.0-informational?style=flat-square) ![AppVersion: 1.26.2](https://img.shields.io/badge/AppVersion-1.26.2-informational?style=flat-square)
 
 [vMonitor Platform Metric](https://www.vngcloud.vn/en/product/vmonitor-platform-metric) is a service that continuously monitors the performance of all resources on your system. This chart adds the vMonitor Platform Metric Agent to all nodes in your Kubernetes cluster via a DaemonSet. It also optionally deploy and collect [kube-state-metrics](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-state-metrics) which support deep monitoring Kubernetes resources.
 
@@ -114,7 +114,7 @@ The following table contains the configurable parameters available in the vMonit
 
 | Configuration                              | Type   | Default                                                    | Description                                                                                                                                                                                                          |
 | ------------------------------------------ | ------ | ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| image.repo                                 | string | `"vngcloud/vmonitor-metrics-agent"`                        | vMonitor Platform Metric Agent image name to use                                                                                                                                                                     |
+| image.repo                                 | string | `"vcr.vngcloud.vn/81-vmp-public/vmonitor-metrics-agent"`                        | vMonitor Platform Metric Agent image name to use                                                                                                                                                                     |
 | image.tag                                  | string | `"1.26.0-2.0.2"`                                           | Define the Agent version to use                                                                                                                                                                                      |
 | image.pullPolicy                           | string | `"IfNotPresent"`                                           | Agent image pull policy                                                                                                                                                                                              |
 | vmonitor.kubeStateMetricsEnabled           | bool   | `true`                                                     | If false, install vMonitor Platform Metric Agent without deploy the kube-state-metrics deployment (Use the kube-state-metrics that is already deployed using kubeStateMetricsAgent.useCustomKubeStateMetricEndpoint) |
@@ -142,7 +142,7 @@ The following table contains the configurable parameters available in the vMonit
 | kubeStateMetricsAgent.nodeSelector | object | `{}` | Allow Kube State Metrics Agent Deployment to schedule on selected nodes |
 | kubeStateMetricsAgent.tolerations | list | `[]` | Allow Kube State Metrics Agent Deployment to schedule on tainted nodes |
 | kubeStateMetricsAgent.affinity | object | `{}` | Allow Kube State Metrics Agent Deployment to schedule using affinity rules |
-| kube-state-metrics.image.repository | string | `"registry.k8s.io/kube-state-metrics/kube-state-metrics"` | Default kube-state-metrics image repository. |
+| kube-state-metrics.image.repository | string | `"vcr.vngcloud.vn/81-vmp-public/kube-state-metrics"` | Default kube-state-metrics image repository. |
 | kube-state-metrics.rbac.create | bool | `true` | If true, create & use RBAC resources |
 | kube-state-metrics.resources | object | `{}` | Resource requests and limits for the kube-state-metrics container. |
 | kube-state-metrics.serviceAccount.create | bool | `true` | If true, create ServiceAccount, require rbac kube-state-metrics.rbac.create true |
