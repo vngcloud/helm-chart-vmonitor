@@ -3,7 +3,7 @@
 
 replicaCount: 1
 image:
-  repo: "vngcloud/vmonitor-metrics-agent"
+  repo: "vcr.vngcloud.vn/81-vmp-public/vmonitor-metrics-agent"
   tag: "1.26.0-2.0.2"
   pullPolicy: IfNotPresent
 podAnnotations: {}
@@ -20,22 +20,22 @@ vmonitor:
   clusterName: "cluster-k8s"
 
 nodeAgent:
-  env: 
-    - name: HOSTNAME
-      valueFrom:
-        fieldRef:
-          fieldPath: spec.nodeName
-    - name: HOSTIP
-      valueFrom:
-        fieldRef:
-          fieldPath: status.hostIP
-    - name: "HOST_PROC"
-      value: "/hostfs/proc"
-    # HOST_SYS is required by the diskio plugin
-    - name: "HOST_SYS"
-      value: "/hostfs/sys"
-    - name: "HOST_MOUNT_PREFIX"
-      value: "/hostfs"
+  env:
+  - name: HOSTNAME
+    valueFrom:
+      fieldRef:
+        fieldPath: spec.nodeName
+  - name: HOSTIP
+    valueFrom:
+      fieldRef:
+        fieldPath: status.hostIP
+  - name: "HOST_PROC"
+    value: "/hostfs/proc"
+  # HOST_SYS is required by the diskio plugin
+  - name: "HOST_SYS"
+    value: "/hostfs/sys"
+  - name: "HOST_MOUNT_PREFIX"
+    value: "/hostfs"
   config:
     global_tags:
       cluster: "${CLUSTER_NAME}"
@@ -67,9 +67,9 @@ nodeAgent:
     #       period: "60s"
 
     inputs:
-      - kubernetes:
-          url: "https://$HOSTIP:10250"
-          insecure_skip_verify: true
+    - kubernetes:
+        url: "https://$HOSTIP:10250"
+        insecure_skip_verify: true
     monitor_self: false
     docker:
       enabled: false
@@ -108,17 +108,17 @@ kubeStateMetricsAgent:
   enabled: true
   useCustomKubeStateMetricEndpoint:
     enabled: false
-    endpoint: "http://example-kube-state-metrics.namespace:8080/metrics" 
+    endpoint: "http://example-kube-state-metrics.namespace:8080/metrics"
 
   env:
-    - name: HOSTNAME
-      valueFrom:
-        fieldRef:
-          fieldPath: spec.nodeName
-    - name: HOSTIP
-      valueFrom:
-        fieldRef:
-          fieldPath: status.hostIP
+  - name: HOSTNAME
+    valueFrom:
+      fieldRef:
+        fieldPath: spec.nodeName
+  - name: HOSTIP
+    valueFrom:
+      fieldRef:
+        fieldPath: status.hostIP
 
   config:
     global_tags:
@@ -151,20 +151,20 @@ kubeStateMetricsAgent:
     #       period: "60s"
 
     inputs:
-      - kube_inventory:
-          ## url is kubernetes api address 
-          ## it is default point to kubernetes api by default k8s service 
-          url: "https://kubernetes.default"
-          namespace: ""
-          resource_include:
-            - "nodes"
-            - "statefulsets"
-            - "deployments"
-            - "pods"
-            - "daemonsets"
-          insecure_skip_verify: true
-          fielddrop:
-            - "terminated_reason"
+    - kube_inventory:
+        ## url is kubernetes api address 
+        ## it is default point to kubernetes api by default k8s service 
+        url: "https://kubernetes.default"
+        namespace: ""
+        resource_include:
+        - "nodes"
+        - "statefulsets"
+        - "deployments"
+        - "pods"
+        - "daemonsets"
+        insecure_skip_verify: true
+        fielddrop:
+        - "terminated_reason"
     monitor_self: false
   ## Configure resource requests and limits
   ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
@@ -199,7 +199,7 @@ kubeStateMetricsAgent:
 kube-state-metrics:
   prometheusScrape: true
   image:
-    repository: registry.k8s.io/kube-state-metrics/kube-state-metrics
+    repository: vcr.vngcloud.vn/81-vmp-public/kube-state-metrics
     tag: v2.6.0
     sha: ""
     pullPolicy: IfNotPresent
@@ -232,7 +232,7 @@ kube-state-metrics:
 
   ## Additional labels to add to all resources
   customLabels: {}
-    # app: kube-state-metrics
+  # app: kube-state-metrics
 
   ## set to true to add the release label so scraping of the servicemonitor with kube-prometheus-stack works out of the box
   releaseLabel: false
@@ -292,14 +292,14 @@ kube-state-metrics:
   podSecurityPolicy:
     enabled: false
     annotations: {}
-      ## Specify pod annotations
-      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#apparmor
-      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#seccomp
-      ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#sysctl
-      ##
-      # seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
-      # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
-      # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
+    ## Specify pod annotations
+    ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#apparmor
+    ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#seccomp
+    ## Ref: https://kubernetes.io/docs/concepts/policy/pod-security-policy/#sysctl
+    ##
+    # seccomp.security.alpha.kubernetes.io/allowedProfileNames: '*'
+    # seccomp.security.alpha.kubernetes.io/defaultProfileName: 'docker/default'
+    # apparmor.security.beta.kubernetes.io/defaultProfileName: 'runtime/default'
 
     additionalVolumes: []
 
@@ -359,7 +359,7 @@ kube-state-metrics:
   # A single '*' can be provided per resource instead to allow any labels, but that has
   # severe performance implications (Example: '=pods=[*]').
   metricLabelsAllowlist: []
-    # - namespaces=[k8s-label-1,k8s-label-n]
+  # - namespaces=[k8s-label-1,k8s-label-n]
 
   # Comma-separated list of Kubernetes annotations keys that will be used in the resource'
   # labels metric. By default the metric contains only name and namespace labels.
@@ -368,39 +368,39 @@ kube-state-metrics:
   # A single '*' can be provided per resource instead to allow any annotations, but that has
   # severe performance implications (Example: '=pods=[*]').
   metricAnnotationsAllowList: []
-    # - pods=[k8s-annotation-1,k8s-annotation-n]
+  # - pods=[k8s-annotation-1,k8s-annotation-n]
 
   # Available collectors for kube-state-metrics.
   # By default, all available resources are enabled, comment out to disable.
   collectors:
-    - certificatesigningrequests
-    - configmaps
-    - cronjobs
-    - daemonsets
-    - deployments
-    - endpoints
-    - horizontalpodautoscalers
-    - ingresses
-    - jobs
-    - limitranges
-    - mutatingwebhookconfigurations
-    - namespaces
-    - networkpolicies
-    - nodes
-    - persistentvolumeclaims
-    - persistentvolumes
-    - poddisruptionbudgets
-    - pods
-    - replicasets
-    - replicationcontrollers
-    - resourcequotas
-    - secrets
-    - services
-    - statefulsets
-    - storageclasses
-    - validatingwebhookconfigurations
-    - volumeattachments
-    # - verticalpodautoscalers # not a default resource, see also: https://github.com/kubernetes/kube-state-metrics#enabling-verticalpodautoscalers
+  - certificatesigningrequests
+  - configmaps
+  - cronjobs
+  - daemonsets
+  - deployments
+  - endpoints
+  - horizontalpodautoscalers
+  - ingresses
+  - jobs
+  - limitranges
+  - mutatingwebhookconfigurations
+  - namespaces
+  - networkpolicies
+  - nodes
+  - persistentvolumeclaims
+  - persistentvolumes
+  - poddisruptionbudgets
+  - pods
+  - replicasets
+  - replicationcontrollers
+  - resourcequotas
+  - secrets
+  - services
+  - statefulsets
+  - storageclasses
+  - validatingwebhookconfigurations
+  - volumeattachments
+  # - verticalpodautoscalers # not a default resource, see also: https://github.com/kubernetes/kube-state-metrics#enabling-verticalpodautoscalers
 
   # Enabling kubeconfig will pass the --kubeconfig argument to the container
   kubeconfig:
@@ -424,16 +424,16 @@ kube-state-metrics:
   namespaceOverride: ""
 
   resources: {}
-    # We usually recommend not to specify default resources and to leave this as a conscious
-    # choice for the user. This also increases chances charts run on environments with little
-    # resources, such as Minikube. If you do want to specify resources, uncomment the following
-    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    # limits:
-    #  cpu: 100m
-    #  memory: 64Mi
-    # requests:
-    #  cpu: 10m
-    #  memory: 32Mi
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #  cpu: 100m
+  #  memory: 64Mi
+  # requests:
+  #  cpu: 10m
+  #  memory: 32Mi
 
   ## Provide a k8s version to define apiGroups for podSecurityPolicy Cluster Role.
   ## For example: kubeTargetVersionOverride: 1.14.9
@@ -465,9 +465,9 @@ kube-state-metrics:
     # memory: 100Mi
 
     # updatePolicy:
-      # Specifies whether recommended updates are applied when a Pod is started and whether recommended updates
-      # are applied during the life of a Pod. Possible values are "Off", "Initial", "Recreate", and "Auto".
-      # updateMode: Auto
+    # Specifies whether recommended updates are applied when a Pod is started and whether recommended updates
+    # are applied during the life of a Pod. Possible values are "Off", "Initial", "Recreate", and "Auto".
+    # updateMode: Auto
 
   # volumeMounts are used to add custom volume mounts to deployment.
   # See example below
