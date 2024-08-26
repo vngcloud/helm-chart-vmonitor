@@ -3,6 +3,29 @@ entries:
   vmonitor-metric-agent:
   - apiVersion: v2
     appVersion: 1.26.2
+    created: "2024-08-26T03:50:42.167074999Z"
+    dependencies:
+    - condition: vmonitor.kubeStateMetricsEnabled
+      name: kube-state-metrics
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 4.20.0
+    description: vMonitor Platform Metric Agent
+    digest: ebb3583a7f759d0f6dcbda35e8e76264e674dd77d1b4753c22c6aff508394180
+    home: https://www.vngcloud.vn
+    icon: https://vngcloud.github.io/helm-charts-vmonitor/vngcloud-logo.png
+    keywords:
+    - monitoring
+    - alerting
+    - metric
+    maintainers:
+    - email: support@vngcloud.vn
+      name: VNGCloud
+    name: vmonitor-metric-agent
+    urls:
+    - https://github.com/vngcloud/helm-charts-vmonitor/releases/download/vmonitor-metric-agent-0.4.0/vmonitor-metric-agent-0.4.0.tgz
+    version: 0.4.0
+  - apiVersion: v2
+    appVersion: 1.26.2
     created: "2023-08-28T13:57:53.732674195Z"
     dependencies:
     - condition: vmonitor.kubeStateMetricsEnabled
@@ -47,4 +70,4 @@ entries:
     urls:
     - https://github.com/vngcloud/helm-charts-vmonitor/releases/download/vmonitor-metric-agent-0.2.0/vmonitor-metric-agent-0.2.0.tgz
     version: 0.2.0
-generated: "2023-08-28T13:57:53.732684395Z"
+generated: "2024-08-26T03:50:42.167113831Z"
